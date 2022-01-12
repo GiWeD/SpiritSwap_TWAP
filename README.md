@@ -19,7 +19,7 @@ pip install matplotlib
 Then just run:
 
 ```bash
-py spiritTwapForFrax.py 
+py spiritTwap.py 
 ``` 
 
 
