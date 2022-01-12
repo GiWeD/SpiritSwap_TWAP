@@ -42,6 +42,7 @@ def main():
     tempTimeArray = list()
     timeArray = list()
     TWAPArray = list()
+    twapRangeArray = list()
     AverageSection = list()
 
     # retrieve and prepare data
@@ -79,7 +80,6 @@ def main():
 
     
     # find TWAP over 1 week window
-    twapRangeArray = list()
     for i in range(start, len(AverageSection)):
         
         if (i%pointCounter == 0) and i > 0:
@@ -94,13 +94,13 @@ def main():
             twapRangeArray.append( initRange + " _To_ " + endRange )
     
     # zip the data
-    data2 = list(zip(timeArray,twapRangeArray, TWAPArray))
+    finalList = list(zip(timeArray,twapRangeArray, TWAPArray))
     # create data frame
-    data = pd.DataFrame(data2, columns=['day','TWAP Range', 'twap'])
+    pandasData = pd.DataFrame(finalList, columns=['day','TWAP Range', 'twap'])
     # pandas add always an index, name it counter
-    data.index.name = 'counter'
+    pandasData.index.name = 'counter'
     # write data to cs
-    data.to_csv("./csvData/" + "coingecko_" +"spiritswap_TWAP.csv", sep=',', encoding='utf-8')
+    pandasData.to_csv("./csvData/" + "coingecko_" +"spiritswap_TWAP.csv", sep=',', encoding='utf-8')
     
     # plot the data
     plt.plot(TWAPArray)
