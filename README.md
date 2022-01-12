@@ -1,5 +1,19 @@
 # SpiritSwap_TWAP
 
+dependecies:
+- Coingecko
+```bash
+pip install pycoingecko
+``` 
+- Pandas (should be already installed)
+```bash
+pip install pandas
+``` 
+- Matlab Plot Lib (should be already installed)
+```bash
+pip install matplotlib
+``` 
+
 
 
 Just run:

@@ -1,11 +1,6 @@
-import time, csv
 import pandas as pd
-import numpy as np
-from pandas.core.frame import DataFrame
 from pycoingecko import CoinGeckoAPI
 cg = CoinGeckoAPI()
-import datetime
-
 import matplotlib.pyplot as plt
 
 # the TWAP must be done over a 1week windows using 4h candles
