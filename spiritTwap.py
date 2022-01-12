@@ -2,6 +2,7 @@ import pandas as pd
 from pycoingecko import CoinGeckoAPI
 cg = CoinGeckoAPI()
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 # the TWAP must be done over a 1week windows using 4h candles
 # The DATA is retrieve from coingecko API since it's the only one free and reliable
@@ -27,7 +28,7 @@ def get_OHLC_Data(token, days ):
 
 def findLastTime(tempTime, lastTime):
     for i in range(len(tempTime)):
-        if(tempTime[i] >= lastTime):
+        if(tempTime[i]/1000 >= lastTime):
             break
     return i
 
@@ -37,7 +38,7 @@ def main():
     ohlcData = get_OHLC_Data('spiritswap', 30)
     dailySection  = len(ohlcData)
 
-    #preapre lists, same kind and length, do in 1 line
+    # preapre lists
     tempTimeArray = list()
     timeArray = list()
     TWAPArray = list()
@@ -46,13 +47,14 @@ def main():
     # retrieve and prepare data
     for i in range(dailySection):
 
-        #retrieve the data in the list
+        # retrieve the data in the list
         tempData = ohlcData[i]
         timestamp = tempData[0]
         open = tempData[1]
         high = tempData[2]
         low = tempData[3]
         close = tempData[4]
+        # print("i: %d\tOpen: %d\tHigh: %d\tLow: %d\tClose: %d" % (i, open, high, low, close), end='\r')
 
         # Average of each day’s price = (Open + High + Low + Close)/4
         AverageSection.append( (open + high + low + close) /4 )
@@ -61,7 +63,7 @@ def main():
 
 
     start = 0
-    deltaTime = (tempTimeArray[1] - tempTimeArray[0]) /1000 # time in ms!
+    deltaTime = (tempTimeArray[1] - tempTimeArray[0]) /1000 # time in ms! 
     pointCounter = int(TWAP_Window/deltaTime)               # cast as int remove floating zeros
 
     try:
@@ -70,30 +72,37 @@ def main():
         timeArray = list(df['day'])
         lastTime = timeArray[ len(timeArray) - 1 ] #get last timestamp and start from it
         start = findLastTime(tempTimeArray, lastTime) + pointCounter
+
     except:
         print("Fist time fellas, got ya")
     
 
-   
+    
     # find TWAP over 1 week window
+    twapRangeArray = list()
     for i in range(start, len(AverageSection)):
         
-        if (i%pointCounter == 0):
+        if (i%pointCounter == 0) and i > 0:
             tempValue = 0
             for k in range(pointCounter):
                 tempValue += AverageSection[i-k]
-                
+            
             TWAPArray.append(tempValue/k)
-            timeArray.append(tempTimeArray[i-k]) 
-        
+            timeArray.append(tempTimeArray[i-k]/1000) # time in ms!
+            initRange = str( datetime.fromtimestamp(tempTimeArray[i-k]/1000) )
+            endRange = str( datetime.fromtimestamp(tempTimeArray[i-k]/1000 + TWAP_Window) )
+            twapRangeArray.append( initRange + " _To_ " + endRange )
+    
     # zip the data
-    data2 = list(zip(timeArray, TWAPArray))
-    data = pd.DataFrame(data2, columns=['day','twap'])
-    #pandas add always an index, name it counter
+    data2 = list(zip(timeArray,twapRangeArray, TWAPArray))
+    # create data frame
+    data = pd.DataFrame(data2, columns=['day','TWAP Range', 'twap'])
+    # pandas add always an index, name it counter
     data.index.name = 'counter'
+    # write data to cs
     data.to_csv("./csvData/" + "coingecko_" +"spiritswap_TWAP.csv", sep=',', encoding='utf-8')
     
-
+    # plot the data
     plt.plot(TWAPArray)
     plt.xlabel('Weeks')
     plt.ylabel('Spirit Price')
