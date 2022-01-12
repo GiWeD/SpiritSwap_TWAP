@@ -17,8 +17,6 @@ import matplotlib.pyplot as plt
 # The data is delivered: [UNIXTIME, OPEN, HIGH, LOW, CLOSED]
 
 
-
-
 # The script will start retrieve the last 30days of information. The first information present in the csv file start from 12/12/2021.
 # After read the Data it load the old information present in coingecko_spiritswap_TWAP.csv and write the new one (if a week is passed!)
 # There is no need to update or whatever, just run it at least once a month please
