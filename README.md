@@ -1,6 +1,6 @@
 # SpiritSwap_TWAP
 
-dependecies:
+dependencies:
 - Coingecko
 ```bash
 pip install pycoingecko
