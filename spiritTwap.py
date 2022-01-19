@@ -34,6 +34,7 @@ def findLastTime(tempTime, lastTime):
 
 
 def main():
+
     TWAP_Window = 604800 #1week in seconds
     ohlcData = get_OHLC_Data('spiritswap', 30)
     dailySection  = len(ohlcData)
@@ -67,6 +68,7 @@ def main():
     deltaTime = (tempTimeArray[1] - tempTimeArray[0]) /1000 # time in ms! 
     pointCounter = int(TWAP_Window/deltaTime)               # cast as int remove floating zeros
 
+    '''
     try:
         df = pd.read_csv('./csvData/coingecko_spiritswap_TWAP.csv')
         TWAPArray = list(df['twap'])
@@ -76,7 +78,7 @@ def main():
 
     except:
         print("Fist time fellas, got ya")
-    
+    '''    
 
     
     # find TWAP over 1 week window
